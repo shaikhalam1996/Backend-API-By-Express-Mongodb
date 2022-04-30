@@ -96,29 +96,36 @@ const getLoggedUser = async(req,res) =>{
 
 const sendResetPasswordEmail = async (req,res) =>{
     let email = req.body.email;
-    if(email){
-        const userEmail = await UserModel.findOne({email:email});
-        if(!userEmail){
-            res.send({status:'Failed',message:"Email Is Not Exists"})
+    try {
+        if(email){
+            const userEmail = await UserModel.findOne({email:email});
+            if(!userEmail){
+                res.send({status:'Failed',message:"Email Is Not Exists"})
+            }else{
+                const secret = userEmail._id + process.env.JWT_SECRET_KEY;
+    
+                const token = jwt.sign({userId:userEmail._id},secret,{expiresIn:'15m'});
+    
+                const link = `http://localhost:3000/api/user/${userEmail._id}/${token}`;
+    
+                // console.log(link)
+
+                //Send MAil CODE
+                let info = await transporter.sendMail({
+                    from:process.env.EMAIL_FROM,
+                    to:userEmail.email,
+                    subject:'Reset Password Email From NodeMailer',
+                    html:`<a href=${link}>Click Here</a> to Reset Password`
+                })
+                res.send({status:'Success',message:"Password Reset Email Sent Please Check Your Mail....",info:info});
+            }
         }else{
-            const secret = userEmail._id + process.env.JWT_SECRET_KEY;
-
-            const token = jwt.sign({userId:userEmail._id},secret,{expiresIn:'15m'});
-
-            const link = `http://localhost:3000/api/user/${userEmail._id}/${token}`;
-
-            //Send MAil CODE
-            let info = await transporter.sendMail({
-                from:process.env.EMAIL_FROM,
-                to:userEmail.email,
-                subject:'Reset Password Email From NodeMailer',
-                html:`<a href=${link}>Click Here</a> to Reset Password`
-            })
-            res.send({status:'Success',message:"Password Reset Email Sent Please Check Your Mail....",info:info});
+            res.send({status:'Failed',message:"Email Fields Are Required"})
         }
-    }else{
-        res.send({status:'Failed',message:"Email Fields Are Required"})
+    } catch (error) {
+        console.log(error)
     }
+   
 
 }
 
