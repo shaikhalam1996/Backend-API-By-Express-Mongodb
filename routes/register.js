@@ -4,8 +4,10 @@ const getAllUserInfoController = require('../controllers/getAllUserController')
 const checkAuthUser = require('../middleware/checkUserAuth')
 
 //First Ways to call middleware
-router.use('/changepassword', checkAuthUser)
-router.use('/loggedUser', checkAuthUser)
+router.use('/changepassword', checkAuthUser.checkAuthUser)
+router.use('/loggedUser', checkAuthUser.checkAuthUser)
+// router.use('/logout', checkAuthUser.userLoggedToken)
+
 
 // Private Route
 router.get('/',getAllUserInfoController.getAllUser)
@@ -23,6 +25,8 @@ router.post('/reset-password/:id/:token', registerController.resetPassword)
 // Protected Route 
 router.post('/changepassword',registerController.changePassword)
 router.get('/loggedUser',registerController.getLoggedUser)
+// router.get('/logout',registerController.logout)
+
 
 
 //Second Ways to call middleware

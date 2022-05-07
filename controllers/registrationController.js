@@ -56,7 +56,7 @@ const loginUser = async (req,res) =>{
             const isMatch = await bcrypt.compare(password,userEmail.password);
             if(isMatch){
                   //Generate JWT Token
-                  const token = jwt.sign({userId:userEmail._id},process.env.JWT_SECRET_KEY,{expiresIn:'1d'})
+                  const token = jwt.sign({userId:userEmail._id},process.env.JWT_SECRET_KEY,{expiresIn:'10m'})
 
                 res.send({status:'Success',message:"Login SuccessFul",token:token})
             }else{
@@ -109,7 +109,7 @@ const sendResetPasswordEmail = async (req,res) =>{
                 const link = `http://localhost:3000/api/user/${userEmail._id}/${token}`;
     
                 // console.log(link)
-
+                
                 //Send MAil CODE
                 let info = await transporter.sendMail({
                     from:process.env.EMAIL_FROM,
@@ -165,11 +165,19 @@ const resetPassword = async (req,res) =>{
 
 }
 
+
+// const logout = async(req,res) => {
+//     console.log(req.token)
+//     jwt.destroy(req.token)
+//     res.send({status:'Success',message:'Logout Success'});
+// }
+
 module.exports = {
     registerUser,
     loginUser,
     changePassword,
     getLoggedUser,
     sendResetPasswordEmail,
-    resetPassword
+    resetPassword,
+    logout
 }

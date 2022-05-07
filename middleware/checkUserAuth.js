@@ -36,4 +36,36 @@ const checkAuthUser = async(req,res,next) =>{
     
 }
 
-module.exports = checkAuthUser;
+
+// const userLoggedToken = async(req,res,next) =>{
+//     let token;
+//     const authorization = req.headers;
+//      // console.log(authorization)
+//     if(authorization.authorization && authorization.authorization.startsWith('Bearer')){
+//         try {
+            
+//             token = authorization.authorization.split(" ")[1]
+//             // console.log(token)
+
+//             req.token = token;
+
+//             // console.log(user_id)
+
+//             // req.user = await UserModel.findById(user_id.userId).select('-password');
+
+//             // console.log(req.user)
+//             next();
+
+//         } catch (error) {
+//             console.log(error)
+//         }
+//     }else{
+//         res.send({status:'Failed',message:"Unauthorized Users"});
+//     }
+    
+// }
+
+module.exports = {
+    checkAuthUser
+    // userLoggedToken
+};
